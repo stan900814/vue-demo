@@ -3,24 +3,22 @@
     <h2>井字棋游戏</h2>
     <div class="chess">
       <div class="row">
-      <Box @click="onClickBox(0,$event)" :n="n"></Box>
-      <Box @click="onClickBox(1,$event)" :n="n"></Box>
-      <Box @click="onClickBox(2,$event)" :n="n"></Box>
+        <Box @click="onClickBox(0,$event)" :n="n"></Box>
+        <Box @click="onClickBox(1,$event)" :n="n"></Box>
+        <Box @click="onClickBox(2,$event)" :n="n"></Box>
+      </div>
+      <div class="row">
+        <Box @click="onClickBox(3,$event)" :n="n"></Box>
+        <Box @click="onClickBox(4,$event)" :n="n"></Box>
+        <Box @click="onClickBox(5,$event)" :n="n"></Box>
+      </div>
+      <div class="row">
+        <Box @click="onClickBox(6,$event)" :n="n"></Box>
+        <Box @click="onClickBox(7,$event)" :n="n"></Box>
+        <Box @click="onClickBox(8,$event)" :n="n"></Box>
+      </div>
+      <h2 class="result">{{result}}</h2>
     </div>
-    <div class="row">
-      <Box @click="onClickBox(3,$event)" :n="n"></Box>
-      <Box @click="onClickBox(4,$event)" :n="n"></Box>
-      <Box @click="onClickBox(5,$event)" :n="n"></Box>
-    </div>
-    <div class="row">
-      <Box @click="onClickBox(6,$event)" :n="n"></Box>
-      <Box @click="onClickBox(7,$event)" :n="n"></Box>
-      <Box @click="onClickBox(8,$event)" :n="n"></Box>
-    </div>
-    <h2 class="result">
-      {{result}}
-    </h2>
-</div>
   </div>
 </template>
 
@@ -32,7 +30,7 @@ export default {
   data() {
     return {
       n: 0,
-      map: [[null, null], [null, null], [null, null]],
+      map: Array(9).fill(null),
       result: ""
     };
   },
@@ -41,46 +39,31 @@ export default {
   },
   methods: {
     onClickBox(i, text) {
-      this.map[Math.floor(i / 3)][i % 3] = text;
+      this.map[i] = text;
       this.n += 1;
-      this.judge();
+      this.judge(this.map);
       if (this.result !== "") {
         return;
       }
     },
-    judge() {
-      for (let i = 0; i < 2; i++) {
-        if (
-          this.map[i][0] !== null &&
-          this.map[i][0] === this.map[i][1] &&
-          this.map[i][1] === this.map[i][2]
-        ) {
-          this.result = `游戏结束：${this.map[i][0]}方获得胜利！`;
+    judge(arr) {
+      const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+      for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (arr[a] && arr[a] === arr[b] && arr[a] === arr[c]) {
+          this.result = `Winner is：${arr[a]}`;
         }
       }
-      for (let j = 0; j < 2; j++) {
-        if (
-          this.map[0][j] !== null &&
-          this.map[0][j] === this.map[1][j] &&
-          this.map[1][j] === this.map[2][j]
-        ) {
-          this.result = `游戏结束：${this.map[0][j]}方获得胜利！`;
-        }
-      }
-      if (
-        this.map[0][2] !== null &&
-        this.map[0][2] === this.map[1][1] &&
-        this.map[1][1] === this.map[2][0]
-      ) {
-        this.result = `游戏结束：${this.map[0][2]}方获得胜利！`;
-      }
-      if (
-        this.map[0][0] !== null &&
-        this.map[0][0] === this.map[1][1] &&
-        this.map[1][1] === this.map[2][2]
-      ) {
-        this.result = `游戏结束：${this.map[0][0]}方获得胜利！`;
-      }
+      return null;
     }
   }
 };
